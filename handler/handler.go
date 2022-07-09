@@ -69,7 +69,7 @@ func UploadSucHandler(w http.ResponseWriter, r *http.Request) {
 	io.WriteString(w, "Upload finished!")
 }
 
-// 接口： 通过文件sha1值获取文件元信息
+// GetFileMetaHandler：通过文件sha1值获取文件元信息的接口
 func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 	// 解析客户端发送请求的参数
 	r.ParseForm()
@@ -83,4 +83,86 @@ func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	w.Write(contentBytes)
+}
+
+// DownloadHandler: 下载文件接口
+func DownloadHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	// 拿到客户端发送来的sha1值
+	fsha1 := r.Form.Get("filehash")
+	// 获取元信息对象
+	fm := meta.GetFileMeta(fsha1)
+	// 从指定位置读入文件到内存，然后返回给客户端
+	f, err := os.Open(fm.Location)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer f.Close()
+
+	// 加载到内存(文件较小时可使用ioutil一次性全部加载到内存；
+	// 文件较大时应要考虑实现流的形式)
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// 加上http的响应头，让浏览器识别出来，然后就可以当成一个文件的下载
+	w.Header().Set("Content-Type", "application/octect-stream")
+	w.Header().Set("content-disposition", "attachment;filename=\"" + fm.FileName + "\"")
+	w.Write(data)
+}
+
+// UpdateFileMetaHandler: 修改文件接口（重命名）
+func UpdateFileMetaHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	// 3个参数：待操作类型、fsha1值、新文件名
+	opType := r.Form.Get("op")  // 0 表示重命名操作
+	fsha1 := r.Form.Get("filehash")
+	newFilename := r.Form.Get("filename")
+
+	// 暂时仅支持重名命操作
+	if opType != "0" {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
+	// POST 请求
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	// 修改当前文件名
+	curFileMeta := meta.GetFileMeta(fsha1)
+	curFileMeta.FileName = newFilename
+	meta.UpdateFileMeta(curFileMeta)
+
+	// 转成json字符串形式，返回给客户端
+	data, err := json.Marshal(curFileMeta)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(data)
+}
+
+func DeleteFileHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	fsha1 := r.Form.Get("filehash")
+	fm := meta.GetFileMeta(fsha1)
+
+	// 删除对应文件元信息的索引
+	meta.RemoveFileMeta(fsha1)
+
+	// 删除文件在"云端"的物理位置
+	os.Remove(fm.Location)
+
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, "Delete successfully!")
 }

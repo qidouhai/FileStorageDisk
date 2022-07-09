@@ -24,3 +24,8 @@ func UpdateFileMeta(fm FileMeta) {
 func GetFileMeta(fhash string) FileMeta {
 	return fileMetas[fhash]
 }
+
+// 
+func RemoveFileMeta(fsha1 string) {
+	delete(fileMetas, fsha1)
+}
