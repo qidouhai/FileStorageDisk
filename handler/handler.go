@@ -74,7 +74,7 @@ func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 	// 解析客户端发送请求的参数
 	r.ParseForm()
 
-	fh := r.Form["filehash"][0]  // 默认第0个
+	fh := r.Form["filehash"][0] // 默认第0个
 	fm := meta.GetFileMeta(fh)
 
 	// 转为Json 字符串形式返回给客户端
@@ -111,7 +111,7 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 加上http的响应头，让浏览器识别出来，然后就可以当成一个文件的下载
 	w.Header().Set("Content-Type", "application/octect-stream")
-	w.Header().Set("content-disposition", "attachment;filename=\"" + fm.FileName + "\"")
+	w.Header().Set("content-disposition", "attachment;filename=\""+fm.FileName+"\"")
 	w.Write(data)
 }
 
@@ -120,7 +120,7 @@ func UpdateFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	// 3个参数：待操作类型、fsha1值、新文件名
-	opType := r.Form.Get("op")  // 0 表示重命名操作
+	opType := r.Form.Get("op") // 0 表示重命名操作
 	fsha1 := r.Form.Get("filehash")
 	newFilename := r.Form.Get("filename")
 
@@ -151,17 +151,18 @@ func UpdateFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+// DeleteFileHandler: 删除文件的接口
 func DeleteFileHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	fsha1 := r.Form.Get("filehash")
 	fm := meta.GetFileMeta(fsha1)
 
-	// 删除对应文件元信息的索引
-	meta.RemoveFileMeta(fsha1)
-
 	// 删除文件在"云端"的物理位置
 	os.Remove(fm.Location)
+
+	// 删除对应文件元信息的索引
+	meta.RemoveFileMeta(fsha1)
 
 	w.WriteHeader(http.StatusOK)
 	io.WriteString(w, "Delete successfully!")
