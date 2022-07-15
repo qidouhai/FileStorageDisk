@@ -57,7 +57,9 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		// 6. 更新FileMeta
 		newFile.Seek(0, 0) // 把文件句柄的位置移到开始位置
 		fileMeta.FileSha1 = util.FileSha1(newFile)
-		meta.UpdateFileMeta(fileMeta)
+		// meta.UpdateFileMeta(fileMeta)
+		// 持久化到数据库
+		_ = meta.UpdateFileMetaToDB(fileMeta)
 
 		// 4. 向客户端返回成功信息/或重定向到一个成功页面
 		http.Redirect(w, r, "/file/upload/suc", http.StatusFound)
@@ -75,7 +77,11 @@ func GetFileMetaHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	fh := r.Form["filehash"][0] // 默认第0个
-	fm := meta.GetFileMeta(fh)
+	// fm := meta.GetFileMeta(fh)
+	fm, err := meta.GetFileMetaFromDB(fh)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 
 	// 转为Json 字符串形式返回给客户端
 	contentBytes, err := json.Marshal(fm)
