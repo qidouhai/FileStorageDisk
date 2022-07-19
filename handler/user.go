@@ -3,9 +3,7 @@ package handler
 import (
 	"fmt"
 	// "io"
-	// "io/ioutil"
-
-	// "io/ioutil"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -21,13 +19,12 @@ const (
 // SignupHandler : 处理用户注册请求
 func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		// data, err := ioutil.ReadFile("./static/view/signup.html")
-		// if err != nil {
-		// 	w.WriteHeader(http.StatusInternalServerError)
-		// 	return
-		// }
-		// w.Write(data)
-		http.Redirect(w, r, "/static/view/signup.html", http.StatusFound)
+		data, err := ioutil.ReadFile("./static/view/signup.html")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Write(data)
 		return
 	}
 	
@@ -36,7 +33,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.Form.Get("username")
 	passwd := r.Form.Get("password")
 
-	if len(username) < 3 || len(passwd) < 3 {
+	if len(username) < 3 || len(passwd) < 5 {
 		w.Write([]byte("Invalid parameter"))
 		return
 	}
@@ -55,13 +52,13 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 // SignInHandler : 登录接口
 func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		// data, err := ioutil.ReadFile("./static/view/signin.html")
-		// if err != nil {
-		// 	io.WriteString(w, "Internal server error")
-		// 	return
-		// }
-		// io.WriteString(w, string(data))
-		http.Redirect(w, r, "/static/view/signin.html", http.StatusFound)
+		data, err := ioutil.ReadFile("./static/view/signin.html")
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Write(data)
+		// http.Redirect(w, r, "/static/view/signin.html", http.StatusFound)
 		return
 	}
 
@@ -88,7 +85,6 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 3. 登录成功后重定向到首页
 	// w.Write([]byte("http://" + r.Host + "/static/view/home.html"))
-	// http.Redirect(w, r, "/static/view/home.html", http.StatusFound)
 	resp := util.RespMsg{
 		Code: 0,
 		Msg: "OK",
@@ -105,6 +101,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp.JSONBytes())
 }
 
+// UserInfoHandler: 用户信息查询接口
 func UserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. 解析参数
 	r.ParseForm()
@@ -121,7 +118,6 @@ func UserInfoHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 3. 查询用户信息
 	user, err := dblayer.GetUserInfo(username)
-	fmt.Printf("user: %v", user)
 	if err != nil {
 		w.WriteHeader(http.StatusForbidden)
 		return

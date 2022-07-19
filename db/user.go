@@ -50,7 +50,6 @@ func UserSignin(username, encPasswd string) bool {
 
 	pRows := mydb.ParseRows(rows)
 	pwd := string(pRows[0]["user_pwd"].([]byte))
-	fmt.Println("pwd:"+pwd)
 	if len(pRows) > 0 && pwd == encPasswd {
 		return true
 	}
