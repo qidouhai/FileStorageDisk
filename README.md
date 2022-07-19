@@ -8,8 +8,9 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	- 2.1基础版文件上传  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	- 2.2 文件查询信息接口  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	- 2.3 实现文件下载、修改、删除接口  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - 3.1 MySQL主从数据同步(一)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - 3.2 持久化
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    - 3.1 MySQL主从数据同步(一)  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    - 3.2 持久化
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     - 4 账号系统和鉴权
 - &nbsp;&nbsp;&nbsp;&nbsp;持续更新中...  
 
 # Getting Started
