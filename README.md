@@ -1,4 +1,4 @@
-> 这是muke上的一个云存储系统项目，计划每天复现一点点。
+> 这是muke上的一个云存储系统项目，计划每天复现一点点。觉得有用的话帮点个星星吧^_^
 
 ## Content
 - &nbsp;&nbsp;&nbsp;&nbsp;[01 基于命令行的图书的增删查改](https://www.cnblogs.com/cenjw/p/gobeginner-proj-bookstore-cli.html")
