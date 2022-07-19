@@ -52,13 +52,7 @@ func SignupHandler(w http.ResponseWriter, r *http.Request) {
 // SignInHandler : 登录接口
 func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		data, err := ioutil.ReadFile("./static/view/signin.html")
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		w.Write(data)
-		// http.Redirect(w, r, "/static/view/signin.html", http.StatusFound)
+		http.Redirect(w, r, "/static/view/signin.html", http.StatusFound)
 		return
 	}
 
@@ -106,15 +100,13 @@ func UserInfoHandler(w http.ResponseWriter, r *http.Request) {
 	// 1. 解析参数
 	r.ParseForm()
 	username := r.Form.Get("username")
-	token := r.Form.Get("token")
-
-	fmt.Printf("username: %v\n", username)
+	// token := r.Form.Get("token")
 
 	// 2.验证token是否有效
-	if !isTokenValid(token) {
-		w.WriteHeader(http.StatusForbidden)
-		return
-	}
+	// if !isTokenValid(token) {
+	// 	w.WriteHeader(http.StatusForbidden)
+	// 	return
+	// }
 
 	// 3. 查询用户信息
 	user, err := dblayer.GetUserInfo(username)
@@ -136,7 +128,7 @@ func isTokenValid(token string) bool {
 	// TODO: 判断token时效性，是否过期
 	// TODO： 从数据库表中查询username对应的token信息
 	// TODO：对比两个token
-	return true
+	return len(token) >= 40
 }
 
 // GenToken : 生成token
