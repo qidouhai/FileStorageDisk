@@ -1,15 +1,18 @@
 package handler
 
 import (
-	"FileStorageDisk/meta"
-	"FileStorageDisk/util"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
+
+	dblayer "FileStorageDisk/db"
+	"FileStorageDisk/meta"
+	"FileStorageDisk/util"
 )
 
 // UploadHandler: 文件上传接口
@@ -60,10 +63,39 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		// meta.UpdateFileMeta(fileMeta)
 		// 持久化到数据库
 		_ = meta.UpdateFileMetaToDB(fileMeta)
-
-		// 4. 向客户端返回成功信息/或重定向到一个成功页面
-		http.Redirect(w, r, "/file/upload/suc", http.StatusFound)
+		r.ParseForm()
+		username := r.Form.Get("username")
+		ok := dblayer.OnUserFileUploadOK(username, fileMeta.FileSha1, fileMeta.FileName, fileMeta.FileSize)
+		if ok {
+			// 4. 向客户端返回成功信息/或重定向到一个成功页面
+			// http.Redirect(w, r, "/file/upload/suc", http.StatusFound)
+			http.Redirect(w, r, "/static/view/home.html", http.StatusFound)
+		}else {
+			w.Write([]byte("Upload Failed."))
+		}
 	}
+}
+
+// QueryFileHandler: 查询批量文件信息
+func FileQueryHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+
+	username := r.Form.Get("username")
+	limitCnt, _ := strconv.Atoi(r.Form.Get("limit")) 
+	userFiles, err := dblayer.QueryUserFileMetas(username, limitCnt)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	// fmt.Printf("userFiles: %v\n", userFiles)
+
+	data, err := json.Marshal(userFiles)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.Write(data)
 }
 
 // UploadSucHandler: 上传已完成页面

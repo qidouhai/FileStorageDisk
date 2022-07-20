@@ -18,7 +18,7 @@ type TableFile struct {
 // OnFileUploadOK: 文件上传完成，保存meta到数据库
 func OnFileUploadOK(fsha1, filename, fileaddr string, filesize int64) bool {
 	stmt, err := mydb.DBConn().Prepare(
-		"INSERT ignore INTO tbll_file(`file_sha1`, `file_name`, `file_size`, " +
+		"INSERT ignore INTO tbl_file(`file_sha1`, `file_name`, `file_size`, " +
 			"`file_addr`, `status`)VALUES(?,?,?,?,1)")
 	if err != nil {
 		fmt.Println("Failed to prepare statement, err: " + err.Error())
@@ -47,7 +47,7 @@ func OnFileUploadOK(fsha1, filename, fileaddr string, filesize int64) bool {
 func GetFileMeta(fhash string) (*TableFile, error) {
 	stmt, err := mydb.DBConn().Prepare(
 		"SELECT file_sha1, file_name, file_addr, file_size "+
-		"FROM tbll_file where file_sha1=? limit 1")
+		"FROM tbl_file where file_sha1=? limit 1")
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
