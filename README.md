@@ -1,21 +1,22 @@
 > 这是muke上的一个云存储系统项目，计划每天复现一点点。觉得有用的话帮点个星星吧^_^
 
-## Content
-- &nbsp;&nbsp;&nbsp;&nbsp;[01 基于命令行的图书的增删查改](https://www.cnblogs.com/cenjw/p/gobeginner-proj-bookstore-cli.html")
--  &nbsp;&nbsp;&nbsp;&nbsp;[02 文件整理](https://www.cnblogs.com/cenjw/p/gobeginner-proj-organize-folder.html)
-- &nbsp;&nbsp;&nbsp;&nbsp;[03 Bookstore REST API](https://www.cnblogs.com/cenjw/p/bookstore-rest-api.html)
-- &nbsp;&nbsp;&nbsp;&nbsp;[04 Golang仿云盘项目](https://www.cnblogs.com/cenjw/p/go-filestore-disk-system.html)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	- 2.1基础版文件上传  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	- 2.2 文件查询信息接口  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	- 2.3 实现文件下载、修改、删除接口  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    - 3.1 MySQL主从数据同步(一)  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    - 3.2 持久化  
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     - 4 账号系统和鉴权
-- &nbsp;&nbsp;&nbsp;&nbsp;持续更新中...  
+# 进度情况
+
+* [x] 简单的文件上传服务
+* [x] mysql存储文件元数据
+* [x] 账号系统, 注册/登录/查询用户或文件数据
+* [x] 基于帐号的文件操作接口
+* [x] 文件秒传功能
+* [ ] 文件分块上传/断点续传功能
+* [ ] 搭建及使用Ceph对象存储集群
+* [ ] 使用阿里云OSS对象存储服务
+* [ ] 使用RabbitMQ实现异步任务队列
+* [ ] 微服务化(API网关, 服务注册, RPC通讯)
+* [ ] CI/CD(持续集成)
 
 # Getting Started
 
-# 准备
+## 准备
 
 - Linux（Ubuntu）/Windows10
 - VS Code
