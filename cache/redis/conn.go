@@ -10,7 +10,7 @@ import (
 var (
 	pool *redis.Pool
 	redisHost = "127.0.0.1:6379"
-	redisPass = "testupload"
+	redisPass = "123456"
 )
 
 func newRedisPool() *redis.Pool {
